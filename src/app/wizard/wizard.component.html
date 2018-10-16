@@ -1,0 +1,107 @@
+<mat-card>
+  <mat-horizontal-stepper linear='true' #stepper>
+    <mat-step [stepControl]="basicInfoFg">
+      <form [formGroup]='basicInfoFg'>
+        <ng-template matStepLabel>Basic information</ng-template>
+        <header>
+          <h1>Welcome! Get {{ insuranceType }}</h1>
+        </header>
+        <h4 class='question'>Where is the property?</h4>
+        <div class='location'>
+          <mat-form-field class='location-field'>
+            <mat-select placeholder="Location" name="location" formControlName='location' required>
+              <mat-option *ngFor="let place of places" [value]="place.value">
+                {{place.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class='rent-own'>
+          <mat-button-toggle-group formControlName='ownershipStatus' required>
+            <mat-button-toggle value="own">
+              I own
+            </mat-button-toggle>
+            <mat-button-toggle value="rent">
+              I rent
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="three-spans">
+          <span>
+            <mat-form-field>
+              <input matInput type="text" name="firstname" placeholder="First name" #fname formControlName="firstName"
+                required>
+              <mat-error *ngIf="fname.invalid">Please enter your first name.</mat-error>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-form-field>
+              <input matInput type="text" name="lastname" placeholder="Last name" #lName formControlName='lastName'
+                required>
+              <mat-error *ngIf="lName.invalid">Please enter your last name.</mat-error>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="dobPicker" name="dateofbirth" placeholder="Date of birth"
+                formControlName='dob' required>
+              <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+              <mat-datepicker #dobPicker></mat-datepicker>
+            </mat-form-field>
+          </span>
+        </div>
+
+        <h4 class='question'>When do you want your coverage to start?</h4>
+        <div class='three-spans' formGroupName="coverageStart">
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Year" formControlName='year' (selectionChange)="updateDaysInMonth()" required>
+                <mat-option *ngFor="let y of years" [value]="y">{{y}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Month" formControlName='month' (selectionChange)="updateDaysInMonth()" required>
+                <mat-option *ngFor="let m of months" [value]="m.value">{{m.viewValue}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Date" formControlName='day' [value]='basicInfoFg.value.coverageStart.day'
+                required>
+                <mat-option *ngFor="let d of daysInMonth" [value]="d">{{d}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        </div>
+
+        <mat-action-row>
+          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' mat-button (click)="debug()">Debug</button>
+        </mat-action-row>
+      </form>
+    </mat-step>
+
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Dwelling information</ng-template>
+        <mat-action-row>
+          <button class='float-left' mat-button color="primary" matStepperPrevious>Back</button>
+          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' mat-button (click)="debug()">Debug</button>
+        </mat-action-row>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Review</ng-template>
+      You are now done.
+      <mat-action-row>
+        <button class='float-right' mat-button color="primary" matStepperNext>Submit</button>
+      </mat-action-row>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-card>
