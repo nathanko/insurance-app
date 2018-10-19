@@ -1,12 +1,12 @@
 <mat-card>
-  <mat-horizontal-stepper linear='true' #stepper>
-    <mat-step [stepControl]="basicInfoFg">
-      <form [formGroup]='basicInfoFg'>
+  <mat-horizontal-stepper linear='false' #stepper>
+    <mat-step [stepControl]="form">
+      <form [formGroup]='form'>
         <ng-template matStepLabel>Basic information</ng-template>
         <header>
           <h1>Welcome! Get {{ insuranceType }}</h1>
         </header>
-        <h4 class='question'>Where is the property?</h4>
+        <h4>Where is the property?</h4>
         <div class='location'>
           <mat-form-field class='location-field'>
             <mat-select placeholder="Location" name="location" formControlName='location' required>
@@ -17,9 +17,9 @@
           </mat-form-field>
         </div>
 
-        <div class='rent-own'>
+        <div class='question'>
           <mat-button-toggle-group formControlName='ownershipStatus' required>
-            <mat-button-toggle value="own">
+            <mat-button-toggle #status value="own">
               I own
             </mat-button-toggle>
             <mat-button-toggle value="rent">
@@ -28,7 +28,7 @@
           </mat-button-toggle-group>
         </div>
 
-        <div class="three-spans">
+        <div class="multiple-spans">
           <span>
             <mat-form-field>
               <input matInput type="text" name="firstname" placeholder="First name" #fname formControlName="firstName"
@@ -45,7 +45,7 @@
           </span>
           <span>
             <mat-form-field>
-              <input matInput [matDatepicker]="dobPicker" name="dateofbirth" placeholder="Date of birth"
+              <input matInput [matDatepicker]="dobPicker" [max]='now' name="dateofbirth" placeholder="Date of birth"
                 formControlName='dob' required>
               <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
               <mat-datepicker #dobPicker></mat-datepicker>
@@ -53,8 +53,8 @@
           </span>
         </div>
 
-        <h4 class='question'>When do you want your coverage to start?</h4>
-        <div class='three-spans' formGroupName="coverageStart">
+        <h4>When do you want your coverage to start?</h4>
+        <div class='multiple-spans' formGroupName="coverageStart">
           <span>
             <mat-form-field>
               <mat-select placeholder="Year" formControlName='year' (selectionChange)="updateDaysInMonth()" required>
@@ -71,8 +71,7 @@
           </span>
           <span>
             <mat-form-field>
-              <mat-select placeholder="Date" formControlName='day' [value]='basicInfoFg.value.coverageStart.day'
-                required>
+              <mat-select placeholder="Date" formControlName='day' [value]='form.value.coverageStart.day' required>
                 <mat-option *ngFor="let d of daysInMonth" [value]="d">{{d}}</mat-option>
               </mat-select>
             </mat-form-field>
@@ -87,8 +86,103 @@
     </mat-step>
 
     <mat-step>
-      <form>
+      <form [formGroup]="form">
         <ng-template matStepLabel>Dwelling information</ng-template>
+        <div class='question'>
+          <h4>What kind of property?</h4>
+          <mat-button-toggle-group formControlName='propertyKind' required>
+            <mat-button-toggle *ngFor="let item of propertyKinds[getFormField('ownershipStatus')]" [value]="item">
+              {{item}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div class='question' *ngIf="shouldShowField('primaryResidenceQuestion')">
+          <h4>Is this property your primary residence?</h4>
+          <mat-button-toggle-group formControlName='isPrimaryResidence' required>
+            <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+              {{item}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div class='question' *ngIf="shouldShowField('secondaryOrConstructionQuestion')">
+          <h4>Is this property a secondary residence or under construction?</h4>
+          <!-- TODO: Allow deselection -->
+          <mat-button-toggle-group formControlName='secondaryResidenceOrConstruction'>
+            <mat-button-toggle *ngFor="let item of ['Secondary', 'Under Construction']" [value]="item">
+              {{item}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div class='question' *ngIf="shouldShowField('isVacantQuestion')">
+          <h4>Is this property currently vacant?</h4>
+          <mat-button-toggle-group formControlName='isVacant' required>
+            <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+              {{item}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div class='question multiple-spans' *ngIf="shouldShowField('vacancyDetailsQuestion')" formGroupName="vacancy">
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Duration of vacancy" formControlName='duration' required>
+                <mat-option *ngFor="let i of ['Short','Medium','Long','Always']" [value]="i">{{i}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <span>
+            <mat-form-field>
+              <input matInput type="text" name="vacancyreason" placeholder="Reason for vacancy" #vacreason
+                formControlName="reason" required>
+              <mat-error *ngIf="vacreason.invalid">Please enter a reason for vacancy.</mat-error>
+            </mat-form-field>
+          </span>
+        </div>
+        <mat-action-row>
+          <button class='float-left' mat-button color="primary" matStepperPrevious>Back</button>
+          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' mat-button (click)="debug()">Debug</button>
+        </mat-action-row>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Claims History</ng-template>
+      <form [formGroup]="form">
+        <div class='question'>
+          <h4>Have you made a claim in the past 10 years?</h4>
+          <mat-button-toggle-group formControlName='hasMadeClaim' required>
+            <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+              {{item}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div *ngIf="getFormField('hasMadeClaim') == true" formArrayName="claims">
+          <mat-card class='question' *ngFor="let claim of claims.controls; let i=index">
+            <div [formGroupName]="i" class='multiple-spans'>
+              <h4>Claim #{{i+1}}</h4>
+              <span>
+                <mat-form-field>
+                  <mat-select placeholder="What happened?" formControlName='event' required>
+                    <mat-option *ngFor="let event of ['Fire', 'Flood', 'Aliens', 'Other']" [value]="i">{{event}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </span>
+              <span>
+                <mat-form-field>
+                  <input matInput [matDatepicker]="claimPicker" name="claimDate{{i}}" placeholder="When did it happen?"
+                    formControlName='date' [max]='now' required>
+                  <mat-datepicker-toggle matSuffix [for]="claimPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #claimPicker></mat-datepicker>
+                </mat-form-field>
+              </span>
+            </div>
+            <mat-action-row>
+              <button class='float-right' mat-button color="warn" (click)='removeClaim(i)'>Delete</button>
+              <div class='clearfix'></div>
+            </mat-action-row>
+          </mat-card>
+          <button id='add-claim-btn' mat-button color="primary" (click)="addClaim()">Add another claim</button>
+          <div class='clearfix'></div>
+        </div>
         <mat-action-row>
           <button class='float-left' mat-button color="primary" matStepperPrevious>Back</button>
           <button class='float-right' mat-button color="primary" matStepperNext>Next</button>

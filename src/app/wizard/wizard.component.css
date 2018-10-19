@@ -6,10 +6,6 @@ h1, h2, h3, h4 {
   padding-top: 1em;
   font-weight: normal;
 }
-.question {
-  margin-top: 1rem;
-  text-align: center;
-}
 .location {
   width: 70%;
   margin: 0 auto;
@@ -17,28 +13,43 @@ h1, h2, h3, h4 {
 .location mat-form-field {
   width: 100%;
 }
-.rent-own {
+.question {
   text-align: center;
-  margin: 2rem auto;
+  margin: 2rem;
 }
-.rent-own mat-button-toggle {
-  padding: 0.5rem 1rem;
+.question mat-button-toggle {
+  padding: 0rem 1rem;
   width: 50%;
+}
+.question h1, .question h2, .question h3, .question h4{
+  margin-top: 1rem;
+  text-align: center;
 }
 .mat-button-toggle-checked {
   background-color: #3f51b5;
   color: white;
 }
-.three-spans {
+.multiple-spans {
   text-align: center;
   margin: 0 auto;
 }
-.three-spans span{
+.multiple-spans span{
   padding: 0 1rem;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
 }
 .float-left {
   float: left;
 }
 .float-right {
   float: right;
+}
+#add-claim-btn {
+  float: right;
+  margin: 0 1rem 2rem;
+}
+.clearfix {
+  clear: both;
 }

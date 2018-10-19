@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {FormGroup, Validators, FormBuilder} from '@angular/forms';
+import {FormGroup, Validators, FormBuilder, FormArray} from '@angular/forms';
 
 @Component({
   selector: 'app-wizard',
@@ -7,7 +7,7 @@ import {FormGroup, Validators, FormBuilder} from '@angular/forms';
   styleUrls: ['./wizard.component.css']
 })
 export class WizardComponent implements OnInit {
-  basicInfoFg: FormGroup;
+  form: FormGroup;
 
   insuranceType = 'Home Insurance';
 
@@ -19,7 +19,7 @@ export class WizardComponent implements OnInit {
   ];
 
   daysInMonth: number[];
-  private now: Date;
+  now: Date;
 
   // display next 5 years from now
   years: number[] = Array(5).fill(0).map((x, i) => i + (new Date().getFullYear()));
@@ -38,13 +38,27 @@ export class WizardComponent implements OnInit {
     {value: 12, viewValue: 'December'}
   ];
 
+  propertyKinds = {
+    own: [
+      'Home',
+      'Condo',
+      'Seasonal',
+      'Rental Dwelling',
+      'Mobile Home',
+    ],
+    rent: [
+      'Tenant',
+      'Storage'
+    ]
+  };
+
   constructor(private fb: FormBuilder){}
 
   ngOnInit(){
     this.now = new Date();
-    this.basicInfoFg = this.fb.group({
-      location: null,
-      ownershipStatus: '',
+    this.form = this.fb.group({
+      location: '',
+      ownershipStatus: 'own', //debug
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       dob: null,
@@ -53,25 +67,89 @@ export class WizardComponent implements OnInit {
         // month indexed from 1 (January is 1, February is 2, etc.)
         month: this.now.getMonth() + 1,
         day: this.now.getDate(),
-      })
+      }),
+      propertyKind: '',
+      isPrimaryResidence: null,
+      secondaryResidenceOrConstruction: '',
+      isVacant: null,
+      vacancy: this.fb.group({
+        duration: '',
+        reason: '',
+      }),
+      hasMadeClaim: null,
+      claims: this.fb.array([this.buildClaim()]),
     });
 
     this.daysInMonth = Array(this.getDaysInMonth()).fill(0).map((x, i) => i + 1);
   }
   getDaysInMonth(): number {
-    return (new Date(this.basicInfoFg.value.coverageStart.year, this.basicInfoFg.value.coverageStart.month, 0)).getDate();
+    return (new Date(this.form.value.coverageStart.year, this.form.value.coverageStart.month, 0)).getDate();
   }
   updateDaysInMonth(): void {
     this.daysInMonth = Array(this.getDaysInMonth()).fill(0).map((x, i) => i + 1);
-    if (this.basicInfoFg.value.coverageStart.day > this.getDaysInMonth()) {
-      this.basicInfoFg.value.coverageStart.day = null;
+    if (this.form.value.coverageStart.day > this.getDaysInMonth()) {
+      this.form.value.coverageStart.day = null;
     }
+  }
+  getFormField(key: string) {
+    return this.form.get(key).value;
+  }
+  clearFormField(key: string): void {
+    this.form.patchValue({[key]: null});
+
+  }
+
+  get claims(): FormArray{
+    return <FormArray>this.form.get('claims')
+  }
+  buildClaim(): FormGroup {
+    return this.fb.group({
+      event: '',
+      date: null
+    });
+  }
+  addClaim(): void {
+    this.claims.push(this.buildClaim());
+  }
+  removeClaim(i: number): void {
+    this.claims.removeAt(i);
+  }
+
+  shouldShowField(key: string): boolean {
+    if (key === 'primaryResidenceQuestion') {
+      return this.handleShouldShowField(
+        this.form.value.ownershipStatus === 'own',
+        () => (this.form.patchValue({isPrimaryResidence: null}))
+      );
+    } else if (key === 'secondaryOrConstructionQuestion') {
+      return this.handleShouldShowField(
+        this.form.value.isPrimaryResidence === false,
+        () => (this.form.patchValue({secondaryResidenceOrConstruction: null}))
+      );
+    } else if (key === 'isVacantQuestion') {
+      return this.handleShouldShowField(
+        this.form.value.isPrimaryResidence === true || this.form.value.secondaryResidenceOrConstruction === 'Secondary',
+        () => (this.form.patchValue({isVacant: null}))
+      );
+    } else if (key === 'vacancyDetailsQuestion') {
+      return this.handleShouldShowField(
+        this.form.value.isVacant === true,
+        () => (this.form.value.vacancy.duration = this.form.value.vacancy.reason = null)
+      );
+    }
+  }
+  handleShouldShowField (condition: boolean, hideCallback: Function): boolean {
+    if (condition) {
+      return true;
+    }
+    hideCallback();
+    return false;
   }
   log(s) {
     console.log(s);
   }
   debug() {
-    console.log(this.basicInfoFg.value);
+    console.log(JSON.stringify(this.form.value, null, 2));
   }
 
 }
