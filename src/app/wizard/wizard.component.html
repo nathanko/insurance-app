@@ -1,7 +1,7 @@
 <mat-card>
-  <mat-horizontal-stepper linear='false' #stepper>
-    <mat-step [stepControl]="form">
-      <form [formGroup]='form'>
+  <mat-horizontal-stepper [linear]='isLinear' #stepper>
+    <mat-step [stepControl]="basicForm">
+      <form [formGroup]='basicForm' (ngSubmit)='onSubmit($event, 0)'>
         <ng-template matStepLabel>Basic information</ng-template>
         <header>
           <h1>Welcome! Get {{ insuranceType }}</h1>
@@ -71,27 +71,27 @@
           </span>
           <span>
             <mat-form-field>
-              <mat-select placeholder="Date" formControlName='day' [value]='form.value.coverageStart.day' required>
+              <mat-select placeholder="Date" formControlName='day' [value]='basicForm.get("coverageStart.day")' required>
                 <mat-option *ngFor="let d of daysInMonth" [value]="d">{{d}}</mat-option>
               </mat-select>
             </mat-form-field>
           </span>
         </div>
-
+        <small *ngIf="DEBUG">Form status: {{ basicForm.status }}</small>
         <mat-action-row>
-          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
-          <button class='float-right' mat-button (click)="debug()">Debug</button>
+          <button class='float-right' type='submit' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' type='button' mat-button (click)="debug()" *ngIf="DEBUG">Debug</button>
         </mat-action-row>
       </form>
     </mat-step>
 
-    <mat-step>
-      <form [formGroup]="form">
+    <mat-step [stepControl]='dwellingForm'>
+      <form [formGroup]='dwellingForm' (ngSubmit)='onSubmit($event, 1)'>
         <ng-template matStepLabel>Dwelling information</ng-template>
         <div class='question'>
           <h4>What kind of property?</h4>
           <mat-button-toggle-group formControlName='propertyKind' required>
-            <mat-button-toggle *ngFor="let item of propertyKinds[getFormField('ownershipStatus')]" [value]="item">
+            <mat-button-toggle *ngFor="let item of updatedPropertyKinds" [value]="item">
               {{item}}
             </mat-button-toggle>
           </mat-button-toggle-group>
@@ -132,21 +132,23 @@
           <span>
             <mat-form-field>
               <input matInput type="text" name="vacancyreason" placeholder="Reason for vacancy" #vacreason
-                formControlName="reason" required>
+                formControlName="reason"  required>
               <mat-error *ngIf="vacreason.invalid">Please enter a reason for vacancy.</mat-error>
             </mat-form-field>
           </span>
         </div>
+        <small *ngIf="DEBUG">Form status: {{ dwellingForm.status }}</small>
         <mat-action-row>
-          <button class='float-left' mat-button color="primary" matStepperPrevious>Back</button>
-          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
-          <button class='float-right' mat-button (click)="debug()">Debug</button>
+          <button class='float-left' type='button' mat-button color="primary" matStepperPrevious>Back</button>
+          <button class='float-right' type='submit' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' type='button' mat-button (click)="debug()" *ngIf="DEBUG">Debug</button>
         </mat-action-row>
       </form>
     </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Claims History</ng-template>
-      <form [formGroup]="form">
+
+    <mat-step [stepControl]='claimsForm'>
+      <form [formGroup]='claimsForm' (ngSubmit)='onSubmit($event, 2)'>
+        <ng-template matStepLabel>Claims History</ng-template>
         <div class='question'>
           <h4>Have you made a claim in the past 10 years?</h4>
           <mat-button-toggle-group formControlName='hasMadeClaim' required>
@@ -155,7 +157,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
         </div>
-        <div *ngIf="getFormField('hasMadeClaim') == true" formArrayName="claims">
+        <div *ngIf="shouldShowField('claimsList')" formArrayName="claims">
           <mat-card class='question' *ngFor="let claim of claims.controls; let i=index">
             <div [formGroupName]="i" class='multiple-spans'>
               <h4>Claim #{{i+1}}</h4>
@@ -176,25 +178,27 @@
               </span>
             </div>
             <mat-action-row>
-              <button class='float-right' mat-button color="warn" (click)='removeClaim(i)'>Delete</button>
+              <button class='float-right' type='button' mat-button color="warn" (click)='removeClaim(i)' *ngIf='claims.length > 1'>Delete</button>
               <div class='clearfix'></div>
             </mat-action-row>
           </mat-card>
-          <button id='add-claim-btn' mat-button color="primary" (click)="addClaim()">Add another claim</button>
+          <button id='add-claim-btn' type='button' mat-button color="primary" (click)="addClaim()">Add another claim</button>
           <div class='clearfix'></div>
         </div>
+        <small *ngIf="DEBUG">Form status: {{ claimsForm.status }}</small>
         <mat-action-row>
-          <button class='float-left' mat-button color="primary" matStepperPrevious>Back</button>
-          <button class='float-right' mat-button color="primary" matStepperNext>Next</button>
-          <button class='float-right' mat-button (click)="debug()">Debug</button>
+          <button class='float-left' type='button' mat-button color="primary" matStepperPrevious>Back</button>
+          <button class='float-right' type='submit' mat-button color="primary" matStepperNext>Next</button>
+          <button class='float-right' type='button' mat-button (click)="debug()" *ngIf="DEBUG">Debug</button>
         </mat-action-row>
       </form>
     </mat-step>
+
     <mat-step>
       <ng-template matStepLabel>Review</ng-template>
       You are now done.
       <mat-action-row>
-        <button class='float-right' mat-button color="primary" matStepperNext>Submit</button>
+        <button class='float-right' type='submit' mat-button color="primary" matStepperNext>Submit</button>
       </mat-action-row>
     </mat-step>
   </mat-horizontal-stepper>
