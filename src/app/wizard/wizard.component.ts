@@ -171,12 +171,12 @@ export class WizardComponent implements OnInit {
       );
     } else if (key === 'claimsList') {
       return this.handleShouldShowField(this.claimsForm.get('hasMadeClaim').value === true,
-        () =>
+        () => {
           while (this.claims.length > 0) {
             this.removeClaim(0);
           }
           this.addClaim();
-        );
+        });
     }
   }
   private handleShouldShowField(condition: boolean, hideCallback?: Function): boolean {
