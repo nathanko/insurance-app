@@ -1,7 +1,10 @@
 mat-card {
   margin: auto auto;
 }
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   text-align: center;
   padding-top: 1em;
   font-weight: normal;
@@ -21,7 +24,10 @@ h1, h2, h3, h4 {
   padding: 0rem 1rem;
   width: 50%;
 }
-.question h1, .question h2, .question h3, .question h4{
+.question h1,
+.question h2,
+.question h3,
+.question h4 {
   margin-top: 1rem;
   text-align: center;
 }
@@ -33,7 +39,7 @@ h1, h2, h3, h4 {
   text-align: center;
   margin: 0 auto;
 }
-.multiple-spans span{
+.multiple-spans span {
   padding: 0 1rem;
 }
 .center {

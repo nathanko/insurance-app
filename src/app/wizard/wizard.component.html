@@ -71,7 +71,8 @@
           </span>
           <span>
             <mat-form-field>
-              <mat-select placeholder="Date" formControlName='day' [value]='basicForm.get("coverageStart.day")' required>
+              <mat-select placeholder="Date" formControlName='day' [value]='basicForm.get("coverageStart.day")'
+                required>
                 <mat-option *ngFor="let d of daysInMonth" [value]="d">{{d}}</mat-option>
               </mat-select>
             </mat-form-field>
@@ -132,7 +133,7 @@
           <span>
             <mat-form-field>
               <input matInput type="text" name="vacancyreason" placeholder="Reason for vacancy" #vacreason
-                formControlName="reason"  required>
+                formControlName="reason" required>
               <mat-error *ngIf="vacreason.invalid">Please enter a reason for vacancy.</mat-error>
             </mat-form-field>
           </span>

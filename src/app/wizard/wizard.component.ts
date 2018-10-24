@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  Validators,
+  FormBuilder,
+  FormArray,
+  FormControl,
+  AbstractControl
+} from '@angular/forms';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -108,15 +115,17 @@ export class WizardComponent implements OnInit {
   }
   get updatedPropertyKinds(): string[] {
     const selected = this.dwellingForm.get('propertyKind');
-    const options: string[] = this.propertyKinds[this.basicForm.get('ownershipStatus').value];
+    const options: string[] = this.propertyKinds[
+      this.basicForm.get('ownershipStatus').value
+    ];
     // Reset the propertyKind form control if it is not a vaid option given the ownershipStatus
     if (selected.value !== null && !options.includes(selected.value)) {
       selected.reset();
     }
     return options;
   }
-  get claims(): FormArray{
-    return <FormArray>this.claimsForm.get('claims')
+  get claims(): FormArray {
+    return <FormArray>this.claimsForm.get('claims');
   }
   buildClaim(): FormGroup {
     return this.fb.group({
@@ -135,9 +144,11 @@ export class WizardComponent implements OnInit {
     if (key === 'primaryResidenceQuestion') {
       return this.handleShouldShowField(
         this.basicForm.get('ownershipStatus').value === 'own',
-        () => (this.dwellingForm.patchValue({ isPrimaryResidence: null }),
-        this.dwellingForm.get('isPrimaryResidence').clearValidators(),
-        this.dwellingForm.get('isPrimaryResidence').updateValueAndValidity())
+        () => (
+          this.dwellingForm.patchValue({ isPrimaryResidence: null }),
+          this.dwellingForm.get('isPrimaryResidence').clearValidators(),
+          this.dwellingForm.get('isPrimaryResidence').updateValueAndValidity()
+        )
       );
     } else if (key === 'secondaryOrConstructionQuestion') {
       return this.handleShouldShowField(
@@ -170,16 +181,21 @@ export class WizardComponent implements OnInit {
         )
       );
     } else if (key === 'claimsList') {
-      return this.handleShouldShowField(this.claimsForm.get('hasMadeClaim').value === true,
+      return this.handleShouldShowField(
+        this.claimsForm.get('hasMadeClaim').value === true,
         () => {
           while (this.claims.length > 0) {
             this.removeClaim(0);
           }
           this.addClaim();
-        });
+        }
+      );
     }
   }
-  private handleShouldShowField(condition: boolean, hideCallback?: Function): boolean {
+  private handleShouldShowField(
+    condition: boolean,
+    hideCallback?: Function
+  ): boolean {
     if (condition) {
       return true;
     }
@@ -201,11 +217,14 @@ export class WizardComponent implements OnInit {
     event.preventDefault();
     let form: FormGroup;
     switch (formStepNum) {
-      case 0: form = this.basicForm;
+      case 0:
+        form = this.basicForm;
         break;
-      case 1: form = this.dwellingForm;
+      case 1:
+        form = this.dwellingForm;
         break;
-      case 2: form = this.claimsForm;
+      case 2:
+        form = this.claimsForm;
         break;
     }
     if (form.valid) {
