@@ -1,0 +1,11 @@
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
+mat-card {
+  text-align: center;
+  padding: 5rem 10rem;
+}
