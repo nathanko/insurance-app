@@ -1,0 +1,51 @@
+<form [formGroup]='form'>
+  <div class='question'>
+    <h4>What kind of property?</h4>
+    <mat-button-toggle-group formControlName='propertyKind' required>
+      <mat-button-toggle *ngFor="let item of updatedPropertyKinds" [value]="item">
+        {{item}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class='question' *ngIf="shouldShowField('primaryResidenceQuestion')">
+    <h4>Is this property your primary residence?</h4>
+    <mat-button-toggle-group formControlName='isPrimaryResidence' required>
+      <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+        {{item}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class='question' *ngIf="shouldShowField('secondaryOrConstructionQuestion')">
+    <h4>Is this property a secondary residence or under construction?</h4>
+    <!-- TODO: Allow deselection -->
+    <mat-button-toggle-group formControlName='secondaryResidenceOrConstruction'>
+      <mat-button-toggle *ngFor="let item of ['Secondary', 'Under Construction']" [value]="item">
+        {{item}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class='question' *ngIf="shouldShowField('isVacantQuestion')">
+    <h4>Is this property currently vacant?</h4>
+    <mat-button-toggle-group formControlName='isVacant' required>
+      <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+        {{item}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class='question multiple-spans' *ngIf="shouldShowField('vacancyDetailsQuestion')" formGroupName="vacancy">
+    <span>
+      <mat-form-field>
+        <mat-select placeholder="Duration of vacancy" formControlName='duration' required>
+          <mat-option *ngFor="let i of ['Short','Medium','Long','Always']" [value]="i">{{i}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+    <span>
+      <mat-form-field>
+        <input matInput type="text" name="vacancyreason" placeholder="Reason for vacancy" #vacreason formControlName="reason"
+          required>
+        <mat-error *ngIf="vacreason.invalid">Please enter a reason for vacancy.</mat-error>
+      </mat-form-field>
+    </span>
+  </div>
+</form>

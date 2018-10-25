@@ -15,14 +15,12 @@ import { ApiService } from '../api.service';
   styleUrls: ['./wizard.component.css']
 })
 export class WizardComponent implements OnInit {
-  DEBUG = false;
-  isLinear = true;
+  readonly DEBUG = false;
+  readonly IS_LINEAR = true;
 
   basicForm: FormGroup;
   dwellingForm: FormGroup;
   claimsForm: FormGroup;
-
-  insuranceType = 'Home Insurance';
 
   places = [
     { value: 'kitchener', viewValue: 'Kitchener' },
