@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-horizontal-stepper [linear]='isLinear' #stepper>
+  <mat-vertical-stepper [linear]='isLinear' #stepper>
     <mat-step [stepControl]="basicForm">
       <form [formGroup]='basicForm' (ngSubmit)='onSubmit($event, 0)'>
         <ng-template matStepLabel>Basic information</ng-template>
@@ -202,5 +202,5 @@
         <button class='float-right' type='submit' mat-button color="primary" matStepperNext>Submit</button>
       </mat-action-row>
     </mat-step>
-  </mat-horizontal-stepper>
+  </mat-vertical-stepper>
 </mat-card>
