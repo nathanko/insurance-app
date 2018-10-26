@@ -2,7 +2,7 @@
   <p *ngIf="isDebugMode">Form status: {{ form.status }}</p>
 </mat-action-row>
 <mat-action-row>
-  <button class='float-left' type='button' mat-button color="primary" matStepperPrevious>Back</button>
-  <button class='float-right' type='submit' mat-button color="primary" (click)='submitForm()' matStepperNext>Next</button>
+  <button class='float-left' type='button' mat-button color="primary" matStepperPrevious *ngIf="hasPrevious">Back</button>
+  <button class='float-right' type='submit' mat-button color="primary" (click)='submitForm()' matStepperNext>{{ nextText }}</button>
   <button class='float-right' type='button' mat-button (click)="debug()" *ngIf="isDebugMode">Debug</button>
 </mat-action-row>

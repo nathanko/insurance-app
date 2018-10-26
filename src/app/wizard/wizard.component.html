@@ -4,19 +4,19 @@
     <mat-step [stepControl]="basicForm.form">
       <ng-template matStepLabel>Basic Info</ng-template>
       <app-basic-form #basicForm></app-basic-form>
-      <app-step-action-bar [form]='basicForm.form' [isDebugMode]='DEBUG'></app-step-action-bar>
+      <app-step-action-bar [form]='basicForm.form' [isDebugMode]='DEBUG' [hasPrevious]='false'></app-step-action-bar>
     </mat-step>
     <!-- Property Info Step -->
     <mat-step [stepControl]='propertyForm.form'>
       <ng-template matStepLabel>Property Info</ng-template>
-      <app-property-form [ownershipStatus]='basicForm.ownershipStatus' #propertyForm></app-property-form>
+      <app-property-form [ownershipStatus]='basicForm.ownOrRent' #propertyForm></app-property-form>
       <app-step-action-bar [form]='propertyForm.form' [isDebugMode]='DEBUG'></app-step-action-bar>
     </mat-step>
     <!-- Claims Info Step -->
     <mat-step [stepControl]='claimsForm.form'>
       <ng-template matStepLabel>Claims History</ng-template>
       <app-claims-form #claimsForm></app-claims-form>
-      <app-step-action-bar [form]='claimsForm.form' [isDebugMode]='DEBUG'></app-step-action-bar>
+      <app-step-action-bar [form]='claimsForm.form' [isDebugMode]='DEBUG' [nextText]='"Submit"'></app-step-action-bar>
     </mat-step>
   </mat-horizontal-stepper>
 </mat-card>

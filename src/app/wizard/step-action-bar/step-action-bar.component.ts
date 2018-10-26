@@ -7,17 +7,26 @@ import { ApiService } from 'src/app/api.service';
   templateUrl: './step-action-bar.component.html',
   styleUrls: ['./step-action-bar.component.css'],
 })
-export class StepActionBarComponent implements OnInit {
+export class StepActionBarComponent {
   @Input()
   form: FormGroup;
+
   @Input()
   isDebugMode: boolean;
+
+  @Input()
+  hasPrevious = true;
+
+  @Input()
+  nextText = 'Next';
 
   constructor(private api: ApiService) {}
 
   debug() {
-    console.log(this.form);
-    console.log(this.form.value);
+    if (this.isDebugMode) {
+      console.log(this.form);
+      console.log(JSON.stringify(this.form.value, null, 2));
+    }
   }
 
   submitForm() {

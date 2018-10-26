@@ -7,27 +7,22 @@ import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
   styleUrls: ['./claims-form.component.css', '../wizard.component.css'],
 })
 export class ClaimsFormComponent {
-  form: FormGroup;
+  readonly now = new Date();
+  readonly form: FormGroup = this.fb.group({
+    hasMadeClaim: null,
+    claims: this.fb.array([this.buildClaim()]),
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      hasMadeClaim: null,
-      claims: this.fb.array([this.buildClaim()]),
-    });
-  }
+  constructor(private fb: FormBuilder) {}
 
   get claims(): FormArray {
     return <FormArray>this.form.get('claims');
   }
-  buildClaim(): FormGroup {
-    return this.fb.group({
-      event: '',
-      date: null,
-    });
-  }
+
   addClaim(): void {
     this.claims.push(this.buildClaim());
   }
+
   removeClaim(i: number): void {
     this.claims.removeAt(i);
   }
@@ -45,6 +40,7 @@ export class ClaimsFormComponent {
       );
     }
   }
+
   private handleShouldShowField(
     condition: boolean,
     hideCallback?: Function
@@ -56,5 +52,12 @@ export class ClaimsFormComponent {
       hideCallback();
     }
     return false;
+  }
+
+  private buildClaim(): FormGroup {
+    return this.fb.group({
+      event: '',
+      date: null,
+    });
   }
 }

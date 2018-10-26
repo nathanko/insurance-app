@@ -6,7 +6,7 @@
   <div class='location'>
     <mat-form-field class='location-field'>
       <mat-select placeholder="Location" name="location" formControlName='location' required>
-        <mat-option *ngFor="let place of places" [value]="place">
+        <mat-option *ngFor="let place of locations" [value]="place">
           {{place}}
         </mat-option>
       </mat-select>
@@ -45,7 +45,6 @@
       </mat-form-field>
     </span>
   </div>
-
   <h4>When do you want your coverage to start?</h4>
   <div class='multiple-spans' formGroupName="coverageStart">
     <span>

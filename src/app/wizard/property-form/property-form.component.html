@@ -10,7 +10,7 @@
   <div class='question' *ngIf="shouldShowField('primaryResidenceQuestion')">
     <h4>Is this property your primary residence?</h4>
     <mat-button-toggle-group formControlName='isPrimaryResidence' required>
-      <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+      <mat-button-toggle *ngFor="let item of yesNoOptions" [value]="item=='Yes'">
         {{item}}
       </mat-button-toggle>
     </mat-button-toggle-group>
@@ -19,7 +19,7 @@
     <h4>Is this property a secondary residence or under construction?</h4>
     <!-- TODO: Allow deselection -->
     <mat-button-toggle-group formControlName='secondaryResidenceOrConstruction'>
-      <mat-button-toggle *ngFor="let item of ['Secondary', 'Under Construction']" [value]="item">
+      <mat-button-toggle *ngFor="let item of secondaryResidenceOrConstructionOptions" [value]="item">
         {{item}}
       </mat-button-toggle>
     </mat-button-toggle-group>
@@ -27,7 +27,7 @@
   <div class='question' *ngIf="shouldShowField('isVacantQuestion')">
     <h4>Is this property currently vacant?</h4>
     <mat-button-toggle-group formControlName='isVacant' required>
-      <mat-button-toggle *ngFor="let item of ['Yes', 'No']" [value]="item=='Yes'">
+      <mat-button-toggle *ngFor="let item of yesNoOptions" [value]="item=='Yes'">
         {{item}}
       </mat-button-toggle>
     </mat-button-toggle-group>
@@ -36,7 +36,7 @@
     <span>
       <mat-form-field>
         <mat-select placeholder="Duration of vacancy" formControlName='duration' required>
-          <mat-option *ngFor="let i of ['Short','Medium','Long','Always']" [value]="i">{{i}}</mat-option>
+          <mat-option *ngFor="let i of durationOptions" [value]="i">{{i}}</mat-option>
         </mat-select>
       </mat-form-field>
     </span>

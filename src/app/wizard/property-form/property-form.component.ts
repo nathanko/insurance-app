@@ -7,27 +7,28 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./property-form.component.css', '../wizard.component.css'],
 })
 export class PropertyFormComponent {
-  @Input() ownershipStatus: string;
-
-  form: FormGroup;
+  @Input()
+  ownershipStatus: string;
 
   readonly propertyKinds = {
     own: ['Home', 'Condo', 'Seasonal', 'Rental Dwelling', 'Mobile Home'],
     rent: ['Tenant', 'Storage'],
   };
+  readonly yesNoOptions = ['Yes', 'No'];
+  readonly secondaryResidenceOrConstructionOptions = ['Secondary', 'Under Construction'];
+  readonly durationOptions = ['Short', 'Medium', 'Long', 'Always'];
+  readonly form: FormGroup = this.fb.group({
+    propertyKind: null,
+    isPrimaryResidence: null,
+    secondaryResidenceOrConstruction: '',
+    isVacant: null,
+    vacancy: this.fb.group({
+      duration: null,
+      reason: null,
+    }),
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      propertyKind: null,
-      isPrimaryResidence: null,
-      secondaryResidenceOrConstruction: '',
-      isVacant: null,
-      vacancy: this.fb.group({
-        duration: null,
-        reason: null,
-      }),
-    });
-  }
+  constructor(private fb: FormBuilder) {}
 
   get updatedPropertyKinds(): string[] {
     const selected = this.form.get('propertyKind');
@@ -54,14 +55,14 @@ export class PropertyFormComponent {
         this.form.get('isPrimaryResidence').value === false,
         () =>
           this.form.patchValue({
-            secondaryResidenceOrConstruction: null
+            secondaryResidenceOrConstruction: null,
           })
       );
     } else if (key === 'isVacantQuestion') {
       return this.handleShouldShowField(
         this.form.get('isPrimaryResidence').value === true ||
-        this.form.get('secondaryResidenceOrConstruction').value ===
-        'Secondary',
+          this.form.get('secondaryResidenceOrConstruction').value ===
+            'Secondary',
         () => (
           this.form.patchValue({ isVacant: null }),
           this.form.get('isVacant').clearValidators(),
@@ -81,6 +82,7 @@ export class PropertyFormComponent {
       );
     }
   }
+
   private handleShouldShowField(
     condition: boolean,
     hideCallback?: Function

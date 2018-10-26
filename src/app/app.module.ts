@@ -13,7 +13,6 @@ import {
   MatButtonModule,
   MatExpansionModule,
 } from '@angular/material';
-
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
@@ -21,10 +20,11 @@ import { WizardComponent } from './wizard/wizard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+
 import { HomepageComponent } from './homepage/homepage.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { BasicFormComponent } from './wizard/basic-form/basic-form.component';
 import { StepActionBarComponent } from './wizard/step-action-bar/step-action-bar.component';
+import { BasicFormComponent } from './wizard/basic-form/basic-form.component';
 import { PropertyFormComponent } from './wizard/property-form/property-form.component';
 import { ClaimsFormComponent } from './wizard/claims-form/claims-form.component';
 
@@ -35,8 +35,8 @@ import { ClaimsFormComponent } from './wizard/claims-form/claims-form.component'
     WizardComponent,
     HomepageComponent,
     NotFoundComponent,
-    BasicFormComponent,
     StepActionBarComponent,
+    BasicFormComponent,
     PropertyFormComponent,
     ClaimsFormComponent,
   ],
